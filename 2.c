@@ -22,7 +22,7 @@ int lsi(int n, int a[], int key)
 
 int lsr(int n, int a[], int key, int i)
 {
-	if(n>i)
+	if(n<i)
 		return -1;
 	else if(a[i]==key)
 		return i;
