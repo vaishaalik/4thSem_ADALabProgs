@@ -1,58 +1,71 @@
 #include<stdio.h>
 #include<time.h>
-int a[50];double t, t1, tt, tt1;
-void qsort (int, int);
-int split (int, int);
-int
-main ()
+
+void getarray(int n, int a[])
 {
-  int n, i;
-  t = clock ();
-  printf ("\nHow many elements?\n");
-  scanf ("%d", &n);
-  printf ("\nEnter %d elements:\n", n);
-  for (i = 0; i < n; i++)
-    scanf ("%d", &a[i]);
-  t1 = clock ();
-  qsort (0, n - 1);
-  t1 = clock () - t1;
-  tt1 = ((double) t1) / CLOCKS_PER_SEC;
-  printf ("\nthe total time taken by quicksort function:%f\n", tt1);
-  printf ("\nThe resultant array:\n");
-  for (i = 0; i < n; i++)
-    printf ("%d  ", a[i]);
-  t = clock () - t;
-  tt = ((double) t) / CLOCKS_PER_SEC;
-  printf ("\nthe total time taken for execution:%f\n", tt);
-  return 0;
+	printf("Enter array : \n");
+	for(int i=0;i<n;i++)
+	{
+		printf("pos[%d] :: ",i+1);
+		scanf("%d",&a[i]);
+	}
 }
 
-void
-qsort (int start, int end)
+void display(int n, int a[])
 {
-  int s;
-  if (start >= end)
-    return;
-  s = split (start, end);
-  qsort (start, s - 1);
-  qsort (s + 1, end);
+	for(int i=0;i<n;i++)
+		printf("%d ",a[i]);
+	printf("\n");
+	
 }
 
-int
-split (int start, int end)
+void swap(int *a, int *b)
 {
-  int p = a[start];
-  int i = start, j = end, temp;
-  while (i < j)
-    {
-      while (a[i] <= p)
-	i++;
-      while (a[j] > p)
-	j--;
-      if (i < j)
-	temp = a[i], a[i] = a[j], a[j] = temp;
-    }
-  a[start] = a[j];
-  a[j] = p;
-  return j;
+	int t=*a;
+	*a=*b;
+	*b=t;
 }
+
+int partition(int low, int high, int a[])
+{
+	int i=low-1,pivot=a[high];
+	for(int j=low;j<high;j++)
+		if(a[j]<pivot)
+		{
+			i++;
+			swap(&a[j],&a[i]);
+		}
+	swap(&a[i+1],&a[high]);
+	return i+1;
+}
+
+void quicksort(int low, int high, int a[])
+{
+	if(low<high)
+	{
+		int pi=partition(low,high,a);
+		quicksort(low,pi-1,a);
+		quicksort(pi+1,high,a);
+	}
+}
+
+int main()
+{
+	int n;
+	printf("How many numbers do you want to enter?  ");
+	scanf("%d",&n);
+	int a[n];
+	getarray(n,a);
+	printf("Before any sorting, this is how your array looks like\n");
+	display(n,a);
+	clock_t start,end;
+	start=clock();
+	quicksort(0,n-1,a);
+	printf("AFTER sorting, this is how your array looks like\n");
+	display(n,a);
+	end=clock();
+	double time=((double)(end-start))/CLOCKS_PER_SEC;
+	printf("\n\nTime taken :: \nStart = %ld\nEnd = %ld\nTotal time taken = %f\n\n",start,end,time);
+	return 0;
+}
+
